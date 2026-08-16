@@ -22,9 +22,9 @@ Setup (faca uma vez):
 3. Carregue os segredos do env local (`set -a; source secrets/psi0.env;
    set +a`). Nunca imprima ou commite segredos.
 4. Baixe do HF (token do projeto):
-   - dataset v3 pronto: `AKCITWMOPOC/G1ToteMix-cosmos3-v3-smoke` ->
+   - dataset v3 pronto: `agentereal/G1ToteMix-cosmos3-v3-smoke` ->
      `data/G1ToteMix-cosmos3-v3-smoke`
-   - checkpoint treinado do smoke: `AKCITWMOPOC/cosmos3-nano-g1-smoke`
+   - checkpoint treinado do smoke: `agentereal/cosmos3-nano-g1-smoke`
      (path `iter_000000040`, DCP, 29G)
    - pesos base: `nvidia/Cosmos3-Nano` (+ Wan2.2_VAE.pth) e converta p/ DCP
      conforme o handoff.
@@ -39,14 +39,14 @@ Missao (ordem; nao pule etapas):
    `cosmos_framework/inference/action.py` (embodiment g1_wholebody,
    domain_id 24). Diff minimo, arquivos novos em `psi0_g1/`.
 3. **SFT maior**: regenere o v3 com mais episodios a partir de
-   `AKCITWMOPOC/G1ToteMix-psi0` (v2.1, 308 eps) usando
+   `agentereal/G1ToteMix-psi0` (v2.1, 308 eps) usando
    `psi0_g1/prepare_g1_v3_subset.py`; treine mais iters (comece de
    `iter_000000040`). Com 128GB unificada voce pode religar EMA; avalie
    destravar moe_gen so se o throughput permanecer viavel (meça primeiro
    com um smoke de 40 iters). W&B obrigatorio: run unico em
    ih-akcit/psi-h100, com config, commit hash e dataset revision.
 4. **Publique**: suba o melhor checkpoint p/ o HF
-   (`AKCITWMOPOC/cosmos3-nano-g1-<nome>`) e commite codigo novo na branch
+   (`agentereal/cosmos3-nano-g1-<nome>`) e commite codigo novo na branch
    `dev/marcos` do fork (nunca na main; nunca commite pesos/segredos).
 5. Reporte ao final: o que esta preparado/submetido/concluido/validado,
    metricas, links W&B/HF e bloqueios. O closed-loop (SIMPLE) NAO roda na
