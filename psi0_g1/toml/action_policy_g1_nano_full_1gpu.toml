@@ -1,0 +1,63 @@
+# G1 wholebody action-policy FULL SFT — 308 episodes, single H100.
+# Adapters-only (moe_gen frozen): fits 1 GPU; multi-GPU only needed if
+# moe_gen is unfrozen later. Env: G1_ROOT, BASE_CHECKPOINT_PATH, WAN_VAE_PATH,
+# IMAGINAIRE_OUTPUT_ROOT.
+
+[job]
+task         = "vfm"
+experiment   = "action_policy_g1_nano"
+project      = "cosmos3_action_g1"
+group        = "action_sft"
+name         = "action_policy_g1_nano_full_1gpu"
+wandb_mode   = "online"
+
+[model]
+precision = "bfloat16"
+max_num_tokens_after_packing = 10000   # validated on shared GPUs in the smoke
+
+# EMA keeps an fp32 copy of the gen-pathway weights (~32GB) — does not fit
+# alongside the 16B bf16 model on a single H100.
+[model.ema]
+enabled = false
+
+[model.parallelism]
+data_parallel_shard_degree     = 1
+data_parallel_replicate_degree = 1
+
+[model.activation_checkpointing]
+mode           = "full"
+save_ops_regex = ["fmha"]
+
+[model.tokenizer]
+vae_path = "${oc.env:WAN_VAE_PATH}"
+
+[optimizer]
+lr = 5.0e-05
+# Freeze the 8B diffusion expert (moe_gen): FusedAdam fp32 master+m+v would
+# need ~96GB. Only the action adapters train (validated in the smoke).
+keys_to_select = [
+    "time_embedder",
+    "vae2llm",
+    "llm2vae",
+    "action2llm",
+    "llm2action",
+    "action_modality_embed",
+]
+
+[scheduler]
+cycle_lengths = [20000]
+warm_up_steps = [200]
+
+[trainer]
+max_iter        = 20000
+logging_iter    = 50
+grad_accum_iter = 1
+
+[checkpoint]
+load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
+# Single final save: each checkpoint is ~29G and disk quota (600G) only has
+# headroom for one. Training curve lives in W&B if the job dies early.
+save_iter = 20000
+
+[dataloader_train]
+max_samples_per_batch = 4
