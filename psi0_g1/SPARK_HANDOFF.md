@@ -56,14 +56,17 @@ Mudancas minimas no framework:
    se falhar, teste `[model.activation_checkpointing] save_ops_regex=[]` e/ou
    atencao eager como fallback.
 
-## Pesos e dados necessarios na Spark
+## Pesos e dados necessarios na Spark (tudo no HF, use HF_TOKEN do projeto)
 
-- `nvidia/Cosmos3-Nano` (HF, sem gate, ~33GB) + `Wan2.2_VAE.pth` — baixe com
-  o HF_TOKEN do projeto (nunca commitar). Depois converta p/ DCP:
+- Dataset v3 pronto (77M): `AKCITWMOPOC/G1ToteMix-cosmos3-v3-smoke`
+  (dataset privado; baixe para `data/G1ToteMix-cosmos3-v3-smoke`).
+- Checkpoint do smoke treinado (29G, DCP): `AKCITWMOPOC/cosmos3-nano-g1-smoke`
+  (path `iter_000000040`) — use direto na inferencia offline, sem retreinar.
+- Pesos base `nvidia/Cosmos3-Nano` (HF, sem gate, ~33GB) + `Wan2.2_VAE.pth` —
+  necessarios p/ tokenizer/VAE e p/ novos treinos. Converta p/ DCP:
   `python -m cosmos_framework.scripts.convert_model_to_dcp -o <out> --checkpoint-path Cosmos3-Nano`
-- Subset v3 dos dados: copie `data/G1ToteMix-cosmos3-v3-smoke` do cluster
-  (~2GB) ou regenere com `psi0_g1/prepare_g1_v3_subset.py` a partir do
-  dataset HF `AKCITWMOPOC/...` (v2.1).
+- Para SFT maior: dataset completo v2.1 `AKCITWMOPOC/G1ToteMix-psi0` no HF
+  (308 eps) + `psi0_g1/prepare_g1_v3_subset.py` (ajuste `--num-episodes`).
 
 ## O que falta fazer (ordem)
 
