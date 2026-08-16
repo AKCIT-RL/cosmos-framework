@@ -116,6 +116,7 @@ def load_model(args: argparse.Namespace):
             "checkpoint_path": str(args.checkpoint_path),
             "config_file": str(config_file),
             "use_ema_weights": bool(args.use_ema_weights),
+            "guardrails": False,
         }
     )
     overrides.output_dir = args.run_dir / "inference_setup"
