@@ -27,6 +27,7 @@ EMBODIMENT_TO_DOMAIN_ID: dict[str, int] = {
     "drawanything": 21,
     "behavior1k_lerobot": 22,  # BEHAVIOR-1K R1Pro mobile bimanual (23D joint action)
     "maniparena": 23,  # ManipArena x2robot/ex001_6r dual-arm; own 20D EE-direct action projection
+    "g1_wholebody": 24,  # Unitree G1 wholebody: hands+arms joints(28) + torso rpy/height/vel/yaw(8), 36D
 }
 
 
@@ -51,6 +52,7 @@ EMBODIMENT_TO_RAW_ACTION_DIM: dict[str, int] = {
     "fractal": 10,
     "drawanything": 3,
     "behavior1k_lerobot": 23,  # base(3) trunk(4) arms(14) grippers(2)
+    "g1_wholebody": 36,  # left/right hand(7+7) + left/right arm(7+7) + rpy(3) height(1) torso_v(3) target_yaw(1)
     # NOTE: ``libero`` (7/10/13 depending on ``rotation_space``) and ``hand_pose``
     # (variable with ``keypoint_option`` and ``rotation_format``) are absent
     # because their raw width is set per-dataset at construction time. Inference

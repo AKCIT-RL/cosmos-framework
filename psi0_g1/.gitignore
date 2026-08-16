@@ -1,0 +1,4 @@
+# Heavy artifacts — never commit (quota!)
+checkpoints/
+outputs/
+__pycache__/

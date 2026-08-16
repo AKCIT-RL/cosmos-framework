@@ -21,6 +21,7 @@ from torch.utils.data import Dataset, IterableDataset, get_worker_info
 
 from cosmos_framework.data.generator.action.datasets.droid_merged_lerobot_dataset import DROIDMergedLeRobotDataset
 from cosmos_framework.data.generator.action.datasets.droid_lerobot_dataset import DROIDLeRobotDataset
+from cosmos_framework.data.generator.action.datasets.g1_lerobot_dataset import G1WholebodyLeRobotDataset
 from cosmos_framework.data.generator.action.datasets.libero_lerobot_dataset import LIBEROLeRobotDataset
 from cosmos_framework.data.generator.action.utils.transforms import ActionTransformPipeline
 
@@ -265,6 +266,71 @@ def get_action_libero_sft_dataset(
         pose_coordinate_frame=pose_coordinate_frame,
         action_normalization=action_normalization,
         action_stats_path=action_stats_path,
+    )
+    transform = ActionTransformPipeline(
+        tokenizer_config=tokenizer_config,
+        cfg_dropout_rate=cfg_dropout_rate,
+        max_action_dim=max_action_dim,
+        append_viewpoint_info=append_viewpoint_info,
+        append_duration_fps_timestamps=append_duration_fps_timestamps,
+        append_resolution_info=append_resolution_info,
+        append_idle_frames=append_idle_frames,
+        format_prompt_as_json=format_prompt_as_json,
+    )
+    sft = ActionSFTDataset(dataset, transform, resolution)
+    if iterable_shuffle:
+        return ActionIterableShuffleDataset(sft, seed=episode_shuffle_seed)
+    return sft
+
+
+def get_action_g1_sft_dataset(
+    *,
+    root: str,
+    fps: float = 50.0,
+    chunk_length: int = 16,
+    image_size: int = 256,
+    mode: str = "wam",
+    camera_mode: str = "image",
+    action_normalization: str | None = "quantile",
+    action_stats_path: str | None = None,
+    split: str = "train",
+    val_ratio: float = 0.05,
+    seed: int = 0,
+    sample_stride: int = 1,
+    resolution: str | int | None = None,
+    max_action_dim: int = 64,
+    tokenizer_config: dict | None = None,
+    cfg_dropout_rate: float = 0.1,
+    append_viewpoint_info: bool = True,
+    append_duration_fps_timestamps: bool = True,
+    append_resolution_info: bool = True,
+    append_idle_frames: bool = True,
+    format_prompt_as_json: bool = False,
+    iterable_shuffle: bool = False,
+    episode_shuffle_seed: int = 42,
+) -> Dataset:
+    """Build the Unitree G1 wholebody action-policy SFT dataset.
+
+    Feeds ``G1WholebodyLeRobotDataset`` (36D absolute joint actions,
+    ``quantile``-normalized, single egocentric camera at 256x256) through
+    ``ActionTransformPipeline``. ``root`` is a LOCAL v3-lite LeRobot dir built
+    by ``psi0_g1/prepare_g1_v3_subset.py``.
+    """
+    from cosmos_framework.data.generator.action.datasets.g1_lerobot_dataset import G1WholebodyLeRobotDataset
+
+    dataset = G1WholebodyLeRobotDataset(
+        root=root,
+        image_size=image_size,
+        chunk_length=chunk_length,
+        fps=fps,
+        mode=mode,
+        split=split,
+        val_ratio=val_ratio,
+        seed=seed,
+        camera_mode=camera_mode,
+        action_normalization=action_normalization,
+        action_stats_path=action_stats_path,
+        sample_stride=sample_stride,
     )
     transform = ActionTransformPipeline(
         tokenizer_config=tokenizer_config,

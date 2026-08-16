@@ -1,0 +1,60 @@
+# G1 wholebody action-policy SFT smoke config for the `action_policy_g1_nano`
+# experiment. Single H100, 20-episode subset, few iters — architecture validation.
+# Env: G1_ROOT, BASE_CHECKPOINT_PATH, WAN_VAE_PATH, IMAGINAIRE_OUTPUT_ROOT.
+
+[job]
+task         = "vfm"
+experiment   = "action_policy_g1_nano"
+project      = "cosmos3_action_g1"
+group        = "action_sft"
+name         = "action_policy_g1_nano_smoke"
+wandb_mode   = "online"
+
+[model]
+precision = "bfloat16"
+max_num_tokens_after_packing = 10000   # ~16B params; GPUs shared with foreign procs
+
+# Smoke-only: EMA keeps an fp32 copy of the gen-pathway weights (~32GB).
+[model.ema]
+enabled = false
+
+[model.parallelism]
+data_parallel_shard_degree     = 2      # FSDP shard across 2 H100s
+data_parallel_replicate_degree = 1
+
+[model.activation_checkpointing]
+mode           = "full"          # min VRAM; smoke only measures fit, not speed
+save_ops_regex = ["fmha"]
+
+[model.tokenizer]
+vae_path = "${oc.env:WAN_VAE_PATH}"
+
+[optimizer]
+lr = 5.0e-05
+# Smoke-only: freeze the 8B diffusion expert (moe_gen). FusedAdam keeps fp32
+# master+m+v (12B/param) => ~96GB optimizer state for moe_gen, impossible on
+# 2 shared H100s. Full SFT must restore moe_gen and use 4-8 GPUs.
+keys_to_select = [
+    "time_embedder",
+    "vae2llm",
+    "llm2vae",
+    "action2llm",
+    "llm2action",
+    "action_modality_embed",
+]
+
+[scheduler]
+cycle_lengths = [40]
+warm_up_steps = [5]
+
+[trainer]
+max_iter        = 40
+logging_iter    = 1
+grad_accum_iter = 1
+
+[checkpoint]
+load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
+save_iter = 40
+
+[dataloader_train]
+max_samples_per_batch = 4
