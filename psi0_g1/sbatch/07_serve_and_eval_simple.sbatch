@@ -1,16 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=cosmos3-g1-simple
 #SBATCH --partition=h100n2
-#SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=12
-#SBATCH --mem=120G
+#SBATCH --gres=gpu:2
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=160G
 #SBATCH --time=04:00:00
 #SBATCH --output=/raid/user_marcospaulo/Psi0/logs/cosmos3-g1-simple-%j.out
 #SBATCH --error=/raid/user_marcospaulo/Psi0/logs/cosmos3-g1-simple-%j.err
 
 # Closed-loop smoke: sobe serve_cosmos_g1.py (venv do cosmos-framework, sem
-# container) e roda o cliente SIMPLE eval-decoupled-wbc via docker compose com
-# os mesmos flags/overlays de eval/run_wmo_totes_20260807.sh.
+# container) e roda o cliente SIMPLE eval-decoupled-wbc via apptainer com o SIF
+# containers/simple-wmo-599d6c0.sif (docker foi removido do no dgx-H100-02).
 
 set -euo pipefail
 REPO=/raid/user_marcospaulo/Psi0
@@ -33,7 +33,7 @@ export PYTORCH_ALLOC_CONF=expandable_segments:True
 TASK=simple/G1WholebodyLocomotionPickTotesShelfToTableTeleop-v0
 POLICY=psi0_decoupled_wbc            # cliente HTTP generico; server e Cosmos3
 SIMPLE_COMMIT=${SIMPLE_COMMIT:-599d6c0e3364b31095f1a59fdbfa4ea507ae90c9}
-IMAGE=${IMAGE:-simple-teleoperation:251025-wmo-eval}
+SIF=${SIF:-$REPO/containers/simple-wmo-599d6c0.sif}
 PORT=${PORT:-22085}
 EPISODES=${EPISODES:-2}              # smoke
 MAX_EPISODE_STEPS=${MAX_EPISODE_STEPS:-2400}
@@ -43,8 +43,10 @@ CONTAINER_DATASET=/workspace/SIMPLE/data/$DATASET_RELATIVE_PATH
 export COSMOS_CHECKPOINT_PATH=${COSMOS_CHECKPOINT_PATH:-$CF/psi0_g1/outputs/train/cosmos3_action_g1/action_sft/action_policy_g1_nano_full_1gpu/checkpoints/iter_000020000}
 COSMOS_CHUNK_LENGTH=${COSMOS_CHUNK_LENGTH:-24}
 ACTION_EXEC_HORIZON=${ACTION_EXEC_HORIZON:-24}
-GPU_DEVICE=${SLURM_JOB_GPUS:-${CUDA_VISIBLE_DEVICES:-0}}
-GPU_DEVICE=${GPU_DEVICE%%,*}
+# 2 GPUs do job: primeira para o servidor Cosmos, segunda para o Isaac/mujoco
+ALL_GPUS=${CUDA_VISIBLE_DEVICES:-0,1}
+SERVER_GPU=${ALL_GPUS%%,*}
+CLIENT_GPU=${ALL_GPUS##*,}
 LDP=/isaac-sim/extscache/omni.sensors.nv.camera-0.20.1-coreapi+lx64.r/bin
 ISAAC_BACKGROUND_USD=https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Environments/Simple_Warehouse/warehouse.usd
 
@@ -56,7 +58,6 @@ log() { echo "[$(date '+%F %T')] $*" | tee -a "$LOGS/orchestrator.log"; }
 fail() { log "ERRO: $*"; exit 1; }
 
 SERVER_PID=
-ACTIVE_PROJECT=
 stop_server() {
     if [[ -n ${SERVER_PID:-} ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
         kill "$SERVER_PID" 2>/dev/null || true
@@ -64,14 +65,7 @@ stop_server() {
     fi
     SERVER_PID=
 }
-stop_container() {
-    if [[ -n ${ACTIVE_PROJECT:-} ]]; then
-        docker ps -q --filter "label=com.docker.compose.project=$ACTIVE_PROJECT" \
-            | xargs -r docker stop >/dev/null 2>&1 || true
-    fi
-    ACTIVE_PROJECT=
-}
-cleanup() { stop_container; stop_server; }
+cleanup() { stop_server; }
 trap cleanup EXIT INT TERM
 
 # --- pre-checks ---
@@ -79,13 +73,17 @@ trap cleanup EXIT INT TERM
 [[ -d $COSMOS_CHECKPOINT_PATH ]] || fail "checkpoint Cosmos ausente: $COSMOS_CHECKPOINT_PATH"
 [[ -f ${COSMOS_CHECKPOINT_PATH%/checkpoints/*}/config.yaml ]] || fail "config.yaml do treino ausente"
 [[ -d $DATA_ROOT/$DATASET_RELATIVE_PATH ]] || fail "dataset SIMPLE ausente"
-docker image inspect "$IMAGE" >/dev/null 2>&1 || fail "imagem docker ausente: $IMAGE"
+[[ -f $SIF ]] || fail "SIF ausente: $SIF"
+module load apptainer 2>/dev/null || true
+command -v apptainer >/dev/null || fail "apptainer indisponivel"
+mkdir -p "$REPO/cache/simple/home" "$REPO/cache/simple/uv-cache" "$REPO/cache/simple/tmp"
 nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv
 
 # --- 1) policy server Cosmos3 (background, venv do framework, sem container) ---
-log "Subindo serve_cosmos_g1.py na porta $PORT (chunk=$COSMOS_CHUNK_LENGTH exec=$ACTION_EXEC_HORIZON)"
+log "Subindo serve_cosmos_g1.py na porta $PORT (gpu=$SERVER_GPU chunk=$COSMOS_CHUNK_LENGTH exec=$ACTION_EXEC_HORIZON)"
 (
     cd "$CF"
+    export CUDA_VISIBLE_DEVICES=$SERVER_GPU
     exec .venv/bin/python psi0_g1/serve_cosmos_g1.py \
         --host=0.0.0.0 --port="$PORT" \
         --checkpoint-path="$COSMOS_CHECKPOINT_PATH" \
@@ -106,20 +104,24 @@ done
 [[ $server_ok == 1 ]] || fail "policy server nao respondeu /health"
 log "Server saudavel"
 
-# --- 2) cliente SIMPLE (docker compose, mesmos flags do run_wmo) ---
-project="cosmos3g1-${RUN_ID,,}-smoke"
-project=${project//[^a-z0-9_-]/-}
-ACTIVE_PROJECT=$project
-log "Rodando eval-decoupled-wbc: $EPISODES episodios"
+# --- 2) cliente SIMPLE (apptainer, mesmos flags do run_wmo) ---
+log "Rodando eval-decoupled-wbc via apptainer: $EPISODES episodios (gpu=$CLIENT_GPU)"
 (
-    cd "$SIMPLE"
-    DATA_DIR="$DATA_ROOT" GPUs="$GPU_DEVICE" docker compose \
-        -f docker-compose.yml -f "$REPO/eval/docker-compose.wmo.yml" \
-        -p "$project" run --rm --no-deps -T \
-        -v "$REPO/eval:/workspace/eval" \
-        -e LD_LIBRARY_PATH="/usr/local/cuda-12.8/targets/x86_64-linux/lib:/isaac-sim/extscache/omni.kit.streamsdk.plugins-6.1.7+106.2.0.lx64.r/bin:$LDP" \
-        -e SIMPLE_ISAAC_BACKGROUND_USD="$ISAAC_BACKGROUND_USD" \
-        --entrypoint "uv run --no-sync eval-decoupled-wbc" eval \
+    apptainer exec --nv --cleanenv --writable-tmpfs \
+        --home "$REPO/cache/simple/home:$HOME" \
+        --bind "$DATA_ROOT:/workspace/SIMPLE/data" \
+        --bind "$REPO/eval:/workspace/eval" \
+        --bind "$REPO/cache/simple/uv-cache:/workspace/.uv-cache" \
+        --bind "$REPO/cache/simple/tmp:/tmp" \
+        --pwd /workspace/SIMPLE \
+        --env CUDA_VISIBLE_DEVICES="$CLIENT_GPU" \
+        --env OMNI_KIT_ACCEPT_EULA=Y \
+        --env MUJOCO_GL=egl \
+        --env UV_CACHE_DIR=/workspace/.uv-cache \
+        --env LD_LIBRARY_PATH="/usr/local/cuda-12.8/targets/x86_64-linux/lib:/isaac-sim/extscache/omni.kit.streamsdk.plugins-6.1.7+106.2.0.lx64.r/bin:$LDP" \
+        --env SIMPLE_ISAAC_BACKGROUND_USD="$ISAAC_BACKGROUND_USD" \
+        "$SIF" \
+        uv run --no-sync eval-decoupled-wbc \
         "$TASK" "$POLICY" level-0 \
         --host=localhost --port="$PORT" \
         --sim-mode=mujoco_isaac --headless \
@@ -129,10 +131,9 @@ log "Rodando eval-decoupled-wbc: $EPISODES episodios"
         --eval-dir="/workspace/eval/results/cosmos3-g1-$(date -u '+%Y%m%d')/$RUN_ID/smoke" \
         --num-episodes="$EPISODES" --episode-start=0 --num-workers=1
 ) >> "$LOGS/eval-smoke.log" 2>&1 || fail "eval falhou; veja $LOGS/eval-smoke.log"
-ACTIVE_PROJECT=
 
 # --- 3) metadata ---
-image_id=$(docker image inspect "$IMAGE" --format '{{.Id}}')
+sif_sha=$(sha256sum "$SIF" | awk '{print $1}')
 main_commit=$(git -C "$REPO" rev-parse HEAD)
 cf_commit=$(git -C "$CF" rev-parse HEAD)
 cat > "$RESULT_DIR/metadata.json" <<META
@@ -150,8 +151,8 @@ cat > "$RESULT_DIR/metadata.json" <<META
   "main_repository_commit": "$main_commit",
   "cosmos_framework_commit": "$cf_commit",
   "simple_commit": "$SIMPLE_COMMIT",
-  "docker_image": "$IMAGE",
-  "docker_image_id": "$image_id",
+  "apptainer_sif": "$SIF",
+  "apptainer_sif_sha256": "$sif_sha",
   "isaac_background_usd": "$ISAAC_BACKGROUND_USD",
   "policy_port": $PORT,
   "slurm_job_id": "${SLURM_JOB_ID:-unknown}",
