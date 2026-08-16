@@ -1,0 +1,703 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            m7jtfklpfoxdr92wpn87wdopynlu9bgo:
+                cpu_count: 112
+                cpu_count_logical: 224
+                cudaVersion: "13.0"
+                disk:
+                    /:
+                        total: "1888556142592"
+                        used: "913775263744"
+                email: marcospaulo2@discente.ufg.br
+                executable: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework/.venv/bin/python
+                git:
+                    commit: c808c769f973e6394a152284d3926c3711b9567c
+                    remote: https://github.com/NVIDIA/cosmos-framework.git
+                gpu: NVIDIA H100 80GB HBM3
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-a2e54415-74c7-2636-32fe-6bf2bf27411d
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-569ff164-5b18-c6d3-509c-7b140b1f5b8c
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-43c894bc-d591-2022-7622-a380dc4e1e4d
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-871b1853-bd8d-ffa5-0c7c-2b19bc6dd26c
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-b4e6a3be-ac55-2655-0fcf-acb3760d4b30
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-656cfc64-9c9b-d006-8da8-c9d0560d23e0
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-d2a6af3d-f341-6a4e-bfac-48db4911e7fc
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "85520809984"
+                      name: NVIDIA H100 80GB HBM3
+                      uuid: GPU-e690e8d0-01f5-25a6-3764-1b41f432e57f
+                host: dgx-H100-02
+                memory:
+                    total: "2164176502784"
+                os: Linux-6.8.0-51-generic-x86_64-with-glibc2.39
+                program: <stdin>
+                python: CPython 3.13.15
+                root: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework/psi0_g1/sbatch
+                startedAt: "2026-08-16T21:09:45.793134Z"
+                writerId: m7jtfklpfoxdr92wpn87wdopynlu9bgo
+        m: []
+        python_version: 3.13.15
+        t:
+            "1":
+                - 105
+            "2":
+                - 105
+            "3":
+                - 2
+                - 13
+                - 15
+                - 16
+                - 61
+                - 62
+            "4": 3.13.15
+            "5": 0.25.0
+            "12": 0.25.0
+            "13": linux-x86_64
+JOB_INFO/PWD:
+    value: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework
+JOB_INFO/SLURM_JOB_NAME:
+    value: cosmos3-g1-smoke1g
+JOB_INFO/SLURM_JOB_NODELIST:
+    value: dgx-H100-02
+JOB_INFO/SLURM_JOB_PARTITION:
+    value: h100n2
+JOB_INFO/SLURM_JOB_USER:
+    value: user_marcospaulo
+JOB_INFO/SLURM_JOBID:
+    value: "30169"
+JOB_INFO/SLURM_NNODES:
+    value: "1"
+JOB_INFO/SLURMD_NODENAME:
+    value: dgx-H100-02
+JOB_INFO/job_local_path:
+    value: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework/psi0_g1/outputs/train/cosmos3_action_g1/action_sft/action_policy_g1_nano_smoke_1gpu
+JOB_INFO/s3:
+    value: s3:///cosmos3_action_g1/action_sft/action_policy_g1_nano_smoke_1gpu/
+checkpoint:
+    value:
+        broadcast_via_filesystem: false
+        dcp_async_mode_enabled: false
+        dcp_load_dedup: true
+        enable_gcs_patch_in_boto3: true
+        hf_export:
+            enabled: false
+            export_every_n: 1
+            hf_repo_id: null
+            upload_to_object_store:
+                bucket: ""
+                credentials: ""
+                enabled: false
+        jit:
+            device: cuda
+            dtype: bfloat16
+            enabled: false
+            input_shape: null
+            strict: true
+        keys_not_to_resume: []
+        keys_to_skip_loading:
+            - net_ema.
+            - action2llm
+            - llm2action
+            - action_modality_embed
+            - action_pos_embed
+        load_ema_to_reg: false
+        load_from_object_store:
+            bucket: ""
+            credentials: ""
+            enabled: false
+        load_path: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework/psi0_g1/checkpoints/Cosmos3-Nano-dcp
+        load_training_state: false
+        only_load_scheduler_state: false
+        save_iter: 40
+        save_to_object_store:
+            bucket: ""
+            credentials: ""
+            enabled: false
+        strict_resume: false
+        type:
+            _target_: cosmos_framework.checkpoint.dcp.DistributedCheckpointer
+            callbacks: null
+            disable_async: false
+        verbose: true
+data_setting:
+    value:
+        qwen_max_video_token_length: 8192
+dataloader_train:
+    value:
+        _target_: cosmos_framework.data.generator.joint_dataloader.PackingDataLoader
+        audio_sample_rate: 48000
+        dataloader:
+            _target_: cosmos_framework.data.generator.joint_dataloader.RankPartitionedDataLoader
+            batch_size: 1
+            datasets:
+                g1:
+                    dataset:
+                        _target_: cosmos_framework.data.generator.action.datasets.action_sft_dataset.get_action_g1_sft_dataset
+                        action_normalization: quantile
+                        action_stats_path: null
+                        append_duration_fps_timestamps: true
+                        append_idle_frames: true
+                        append_resolution_info: true
+                        append_viewpoint_info: true
+                        camera_mode: image
+                        cfg_dropout_rate: 0.1
+                        chunk_length: 16
+                        episode_shuffle_seed: 42
+                        format_prompt_as_json: true
+                        fps: 50
+                        image_size: 256
+                        iterable_shuffle: true
+                        max_action_dim: 64
+                        mode: wam
+                        resolution: null
+                        root: /raid/user_marcospaulo/Psi0/data/G1ToteMix-cosmos3-v3-smoke
+                        sample_stride: 1
+                        seed: 0
+                        split: train
+                        tokenizer_config:
+                            _target_: cosmos_framework.configs.base.defaults.reasoner.create_qwen2_tokenizer_with_download
+                            config_variant: hf
+                            pretrained_model_name: Qwen/Qwen3-VL-8B-Instruct
+                        val_ratio: 0.05
+                    ratio: 1
+            in_order: false
+            num_workers: 4
+            persistent_workers: true
+            pin_memory: true
+            prefetch_factor: 4
+            sampler: null
+        dataset_name: action_g1
+        lookahead_limit: 10
+        max_samples_per_batch: 4
+        max_sequence_length: null
+        patch_spatial: 2
+        sound_latent_fps: 0
+        tokenizer_spatial_compression_factor: 16
+        tokenizer_temporal_compression_factor: 4
+        uniae_chunk_frames: null
+        uniae_pad_frames: null
+dataloader_val:
+    value: null
+defaults:
+    value:
+        - _self_
+        - model: mot_fsdp
+        - data_train: null
+        - data_val: null
+        - optimizer: adamw
+        - scheduler: warmup_cosine_lr
+        - checkpoint: s3
+        - callbacks:
+            - basic
+            - optimization
+            - job_monitor
+            - generation
+        - ema: power
+        - tokenizer: wan2pt2_tokenizer
+        - sound_tokenizer: null
+        - vlm_config: null
+        - ckpt_type: dcp
+        - experiment: null
+job:
+    value:
+        cluster: null
+        group: action_sft
+        name: action_policy_g1_nano_smoke_1gpu
+        project: cosmos3_action_g1
+        wandb_mode: online
+model:
+    value:
+        _recursive_: false
+        _target_: cosmos_framework.model.generator.omni_mot_model.OmniMoTModel
+        config:
+            action_gen: true
+            activation_checkpointing:
+                determinism_check: default
+                mode: full
+                preserve_rng_state: true
+                save_ops_regex:
+                    - fmha
+            attention_io_layout: sequence_sharded
+            causal_training_strategy: none
+            compile:
+                ar_post_saturation_mode: default
+                compile_dynamic: true
+                compiled_region: language
+                coordinate_descent_tuning: false
+                enabled: true
+                max_autotune_pointwise: false
+                use_cuda_graphs: false
+            diffusion_expert_config:
+                base_fps: 24
+                enable_fps_modulation: true
+                enable_media_modality_embedding: false
+                enable_vision_modality_embeddings: false
+                load_weights_from_pretrained: false
+                max_vae_latent_side_after_patchify: 20
+                patch_spatial: 2
+                sound_base_temporal_compression_factor: null
+                timestep_range: 1
+                unified_3d_mrope_reset_spatial_ids: true
+                unified_3d_mrope_temporal_modality_margin: 15000
+                vision_temporal_position_mode: latent_index
+            ema:
+                enabled: false
+                iteration_shift: 0
+                rate: 0.1
+            enable_input_bias: true
+            exclude_reasoner_weights_from_checkpoint: false
+            fixed_step_sampler_config: null
+            flex_attention:
+                backend: auto
+                enabled: false
+                mask:
+                    noisy_attention_scope: all_views
+            input_caption_key: ai_caption
+            input_image_key: images
+            input_video_key: video
+            joint_attn_implementation: two_way
+            latent_downsample_factor: 16
+            lbl:
+                coeff_gen: null
+                coeff_und: null
+                method: local
+            load_vision_tokenizer: true
+            log_enc_time_every_n: 100
+            lora_alpha: 32
+            lora_enabled: false
+            lora_rank: 16
+            lora_target_modules: q_proj_moe_gen,k_proj_moe_gen,v_proj_moe_gen,o_proj_moe_gen
+            max_action_dim: 64
+            max_num_tokens_after_packing: 10000
+            natten_parameter_list: null
+            net: null
+            num_embodiment_domains: 32
+            parallelism:
+                cfg_parallel_shard_degree: 1
+                context_parallel_shard_degree: 1
+                data_parallel_replicate_degree: 1
+                data_parallel_shard_degree: 1
+                enable_inference_mode: false
+                fsdp_master_dtype: bfloat16
+                fsdp_reduce_dtype: null
+            precision: bfloat16
+            quantization:
+                exclude_regex: []
+                fp8_granularity: per_row
+                include_regex: []
+                method: null
+                modelopt_fp8_checkpoint_path: null
+                modelopt_fp8_target_fqns: []
+            rectified_flow_inference_config:
+                num_train_timesteps: 1000
+                scheduler_type: unipc
+                shift: 1
+                use_dynamic_shifting: false
+            rectified_flow_training_config:
+                action_loss_weight: 10
+                image_loss_scale: null
+                independent_action_schedule: false
+                independent_sound_schedule: false
+                loss_scale: 10
+                normalize_loss_by_active: false
+                sample_level_loss_averaging: false
+                shift:
+                    "256": 3
+                    "480": 5
+                    "720": 10
+                shift_action: null
+                shift_image: null
+                shift_sound: null
+                sound_loss_scale: null
+                train_time_action_distribution: logitnormal
+                train_time_image_distribution: logitnormal
+                train_time_sound_distribution: logitnormal
+                train_time_video_distribution: waver
+                train_time_weight: uniform
+                use_discrete_rf: false
+                use_dynamic_shift: false
+            resolution: "720"
+            sound_dim: null
+            sound_gen: false
+            sound_latent_fps: 25
+            sound_tokenizer: null
+            state_ch: 48
+            state_t: 300
+            tokenizer:
+                _target_: cosmos_framework.model.generator.tokenizers.wan2pt2_vae_4x16x16.Wan2pt2VAEInterface
+                bucket_name: ""
+                causal: true
+                chunk_duration: 93
+                encode_bucket_multiple: null
+                encode_chunk_frames:
+                    "256": 68
+                    "480": 24
+                    "720": 8
+                    "768": 8
+                encode_exact_durations:
+                    - 17
+                    - 61
+                    - 73
+                keep_decoder_cache: false
+                object_store_credential_path_pretrained: ""
+                spatial_compression_factor: 16
+                temporal_compression_factor: 4
+                temporal_window: null
+                use_streaming_encode: false
+                vae_path: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework/psi0_g1/checkpoints/wan22_vae/Wan2.2_VAE.pth
+            video_temporal_causal: false
+            vision_gen: true
+            vlm_config:
+                layer_module: Qwen2MoTDecoderLayer
+                model_instance:
+                    _target_: cosmos_framework.model.generator.mot.unified_mot.Qwen3VLTextForCausalLM
+                    config:
+                        _target_: cosmos_framework.configs.base.defaults.reasoner.create_vlm_config
+                        base_config:
+                            _target_: cosmos_framework.model.generator.mot.unified_mot.Qwen3VLMoTConfig.from_json_file
+                            json_file: cosmos_framework/model/generator/reasoner/qwen3_vl/configs/Qwen3-VL-8B-Instruct.json
+                        freeze_und: false
+                        layer_module: MoTDecoderLayer
+                        qk_norm_for_text: true
+                        tie_word_embeddings: true
+                model_name: Qwen/Qwen3-VL-8B-Instruct
+                pretrained_weights:
+                    backbone_path: s3://bucket0/cosmos3/pretrained/huggingface/Qwen/Qwen3-VL-8B-Instruct/
+                    checkpoint_format: null
+                    credentials_path: ""
+                    enable_gcs_patch_in_boto3: true
+                    enabled: false
+                qk_norm: false
+                safetensors_path: ""
+                tie_word_embeddings: false
+                tokenizer:
+                    _target_: cosmos_framework.configs.base.defaults.reasoner.create_qwen2_tokenizer_with_download
+                    config_variant: hf
+                    pretrained_model_name: Qwen/Qwen3-VL-8B-Instruct
+                use_system_prompt: false
+model_parallel:
+    value:
+        _cpu_offloading_context: null
+        async_tensor_model_parallel_allreduce: false
+        autocast_dtype: torch.float32
+        barrier_with_L1_time: true
+        batch_p2p_comm: true
+        batch_p2p_sync: true
+        bf16: false
+        context_parallel_size: 1
+        cpu_offloading: false
+        cpu_offloading_activations: true
+        cpu_offloading_double_buffering: false
+        cpu_offloading_num_layers: 0
+        cpu_offloading_weights: false
+        cross_entropy_fusion_impl: native
+        cross_entropy_loss_fusion: false
+        deallocate_pipeline_outputs: false
+        defer_embedding_wgrad_compute: false
+        delay_wgrad_compute: false
+        deterministic_mode: false
+        enable_autocast: false
+        ep_overlap_early_attn_memory_release: false
+        expert_model_parallel_size: 1
+        expert_tensor_parallel_size: 1
+        finalize_model_grads_func: null
+        fp16: false
+        grad_scale_func: null
+        grad_sync_func: null
+        gradient_accumulation_fusion: false
+        hierarchical_context_parallel_sizes: null
+        microbatch_group_size_per_vp_stage: 1
+        moe_extended_tp: false
+        no_sync_func: null
+        num_microbatches_with_partial_activation_checkpoints: null
+        overlap_moe_expert_parallel_comm: false
+        overlap_p2p_comm: false
+        overlap_p2p_comm_warmup_flush: false
+        param_sync_func: null
+        params_dtype: torch.float32
+        perform_initialization: true
+        pipeline_dtype: null
+        pipeline_model_parallel_comm_backend: null
+        pipeline_model_parallel_size: 1
+        sequence_parallel: false
+        tensor_model_parallel_size: 1
+        timers: null
+        tp_comm_atomic_ag: false
+        tp_comm_atomic_rs: false
+        tp_comm_bootstrap_backend: nccl
+        tp_comm_bulk_dgrad: true
+        tp_comm_bulk_wgrad: true
+        tp_comm_overlap: false
+        tp_comm_overlap_ag: true
+        tp_comm_overlap_disable_fc1: false
+        tp_comm_overlap_disable_qkv: false
+        tp_comm_overlap_rs: true
+        tp_comm_overlap_rs_dgrad: false
+        tp_comm_split_ag: true
+        tp_comm_split_rs: true
+        use_cpu_initialization: false
+        use_ring_exchange_p2p: false
+        use_te_rng_tracker: false
+        variable_seq_lengths: false
+        virtual_pipeline_model_parallel_size: null
+        wgrad_deferral_limit: 0
+optimizer:
+    value:
+        _target_: cosmos_framework.utils.generator.optimizer.build_optimizer
+        betas:
+            - 0.9
+            - 0.99
+        disable_weight_decay_for_1d_params: false
+        eps: 1e-08
+        fused: true
+        keys_to_select:
+            - time_embedder
+            - vae2llm
+            - llm2vae
+            - action2llm
+            - llm2action
+            - action_modality_embed
+        lr: 5e-05
+        lr_multipliers:
+            action_modality_embed: 5
+            action2llm: 5
+            llm2action: 5
+        model: null
+        optimizer_type: FusedAdam
+        weight_decay: 0.05
+scheduler:
+    value:
+        _target_: cosmos_framework.utils.generator.optimizer.build_lr_scheduler
+        cycle_lengths:
+            - 40
+        f_max:
+            - 1
+        f_min:
+            - 0
+        f_start:
+            - 1e-06
+        lr_scheduler_type: LambdaLinear
+        optimizer: null
+        verbosity_interval: 0
+        warm_up_steps:
+            - 5
+trainer:
+    value:
+        callbacks:
+            compile_tokenizer:
+                _target_: cosmos_framework.callbacks.compile_tokenizer.CompileTokenizer
+                backend: inductor
+                compile_after_iterations: 3
+                dynamic: false
+                enabled: false
+                fullgraph: false
+                mode: reduce-overhead
+                warmup_resolutions: null
+            dataloader_speed:
+                every_n: 100
+                save_s3: false
+                step_size: 1
+            device_monitor:
+                _target_: cosmos_framework.callbacks.device_monitor.DeviceMonitor
+                every_n: 200
+                log_memory_detail: true
+                save_s3: false
+                step_size: 1
+                upload_every_n_mul: 5
+            expert_heatmap:
+                _target_: cosmos_framework.callbacks.expert_heatmap.ExpertHeatmap
+                every_n: 1000
+            grad_clip:
+                _target_: cosmos_framework.callbacks.grad_clip.GradClip
+                clip_norm: 1
+                force_finite: true
+                track_per_modality: true
+            heart_beat:
+                _target_: cosmos_framework.callbacks.heart_beat.HeartBeat
+                every_n: 200
+                save_s3: false
+                step_size: 1
+                update_interval_in_minute: 20
+            iter_speed:
+                _target_: cosmos_framework.callbacks.iter_speed.IterSpeed
+                every_n: 1
+                hit_thres: 50
+                save_s3: false
+                save_s3_every_log_n: 500
+            load_pretrained:
+                _target_: cosmos_framework.callbacks.load_pretrained.LoadPretrained
+                config: null
+                trainer: null
+            low_precision:
+                _target_: cosmos_framework.utils.callback.LowPrecisionCallback
+                config: null
+                trainer: null
+                update_iter: 1
+            manual_gc:
+                _target_: cosmos_framework.callbacks.manual_gc.ManualGarbageCollection
+                every_n: 5
+                gc_level: 1
+                warm_up: 1
+            mfu:
+                _target_: cosmos_framework.callbacks.mfu.MFUCallback
+                backwardpass_ratio: 2
+                every_n: 1
+                grad_accum_iter: 1
+                hit_thres: 5
+                include_padding: true
+                include_vae_encoder: true
+            moe_router_geometry:
+                _target_: cosmos_framework.callbacks.moe_specialization_callback.MoERouterGeometryCallback
+                every_n: 250
+            moe_specialization:
+                _target_: cosmos_framework.callbacks.moe_specialization_callback.MoESpecializationCallback
+                every_n: 250
+            moe_stability:
+                _target_: cosmos_framework.callbacks.moe_stability_callback.MoEStabilityCallback
+                every_n: 250
+            norm_monitor:
+                _target_: cosmos_framework.callbacks.norm_monitor.NormMonitor
+                every_n: 5000
+                layer_norm_only: false
+                log_stat_wandb: true
+                model_key: null
+                save_s3: false
+                step_size: 1
+                track_activations: true
+            ofu:
+                _target_: cosmos_framework.callbacks.ofu.OFUCallback
+                every_n: 1
+                hit_thres: 5
+            param_count:
+                _target_: cosmos_framework.callbacks.param_count.ParamCount
+                save_s3: false
+            parameter_geometry:
+                _target_: cosmos_framework.callbacks.parameter_geometry_callback.ParameterGeometryCallback
+                every_n: 250
+            sampled_media:
+                _target_: cosmos_framework.callbacks.sampled_media_recorder.SampledMediaRecorder
+                creds_path: null
+                enabled: false
+                flush_every_n_batches: 100
+                output_uri: /raid/user_marcospaulo/Psi0/third_party/cosmos-framework/psi0_g1/outputs/train/cosmos3_action_g1/action_sft/action_policy_g1_nano_smoke_1gpu/sampled_media.lance
+                record_caption: false
+            sequence_packing_padding:
+                _target_: cosmos_framework.callbacks.sequence_packing_padding.SequencePackingPadding
+                every_n: 1
+            sigma_loss_analysis:
+                _target_: cosmos_framework.callbacks.sigma_loss_analysis.SigmaLossAnalysis
+                every_n: 5000
+                every_n_viz: 5000
+                save_s3: false
+            skip_nan_step:
+                _target_: cosmos_framework.callbacks.skip_nan_step.SkipNaNStep
+                max_consecutive_nan: 100
+            termination_signal_checkpoint:
+                _target_: cosmos_framework.callbacks.termination_signal_checkpoint.TerminationSignalCheckpoint
+                min_save_fraction: 0.3333333333333333
+            training_stats:
+                log_freq: 100
+            wandb:
+                _target_: cosmos_framework.utils.callback.WandBCallback
+                config: null
+                trainer: null
+            wandb_2x:
+                _target_: cosmos_framework.callbacks.wandb_log.WandbCallback
+                logging_iter_multipler: 2
+                save_logging_iter_multipler: 1
+                save_s3: false
+            wandb_val:
+                _target_: cosmos_framework.callbacks.wandb_log_eval.WandbCallback
+                save_s3: false
+        compile_config:
+            recompile_limit: 8
+            use_duck_shape: false
+        cp_input_direct_broadcast_min_bytes: 9.223372036854776e+18
+        cudnn:
+            benchmark: true
+            deterministic: false
+        ddp:
+            broadcast_buffers: true
+            find_unused_parameters: false
+            static_graph: true
+        distributed_parallelism: fsdp
+        grad_accum_iter: 1
+        grad_scaler_args:
+            enabled: false
+        logging_iter: 1
+        max_iter: 40
+        max_val_iter: null
+        memory_format: torch.preserve_format
+        profiling:
+            enable_memory_snapshot: false
+            enable_nsys: false
+            enable_profiling: false
+            profile_active: 1
+            profile_freq: 1
+            profile_memory: false
+            profile_warmup: 3
+            record_shape: false
+            save_s3: false
+            target_ranks:
+                - 0
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+            with_modules: true
+            with_stack: true
+        run_validation: false
+        run_validation_on_start: false
+        save_zero_checkpoint: false
+        seed: 42
+        straggler_detection:
+            analyze_backward: true
+            analyze_dataloading: true
+            analyze_forward: true
+            analyze_optimizer: true
+            enabled: false
+            max_diff: 2
+            profile_freq: 1
+            raise_error: true
+            report_freq: 100
+            save_s3: false
+        timeout_period: 999999999
+        type: cosmos_framework.trainer.ImaginaireTrainer
+        validation_iter: 100
+upload_reproducible_setup:
+    value: false

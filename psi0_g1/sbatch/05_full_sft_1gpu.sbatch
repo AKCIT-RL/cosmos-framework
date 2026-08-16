@@ -19,6 +19,7 @@ export UV_CACHE_DIR=$REPO/cache/uv
 export UV_PYTHON_INSTALL_DIR=$REPO/cache/uv-python
 
 set -a; source "$REPO/secrets/psi0.env"; set +a
+export WANDB_PROJECT=cosmos3-g1  # projeto W&B dedicado ao Cosmos
 export HF_HOME=$REPO/cache/huggingface
 export WANDB_DIR=$REPO/cache/wandb
 export G1_ROOT=$REPO/data/G1ToteMix-cosmos3-v3-full

@@ -23,6 +23,7 @@ export PATH=$HOME/.local/bin:$PATH
 export UV_CACHE_DIR=$REPO/cache/uv
 export UV_PYTHON_INSTALL_DIR=$REPO/cache/uv-python
 set -a; source "$REPO/secrets/psi0.env"; set +a
+export WANDB_PROJECT=cosmos3-g1  # projeto W&B dedicado ao Cosmos
 export HF_HOME=$REPO/cache/huggingface
 export WANDB_DIR=$REPO/cache/wandb
 export PYTHONUNBUFFERED=1
@@ -39,7 +40,7 @@ MAX_EPISODE_STEPS=${MAX_EPISODE_STEPS:-2400}
 DATA_ROOT=$REPO/data
 DATASET_RELATIVE_PATH=G1WholebodyLocomotionPickTotesShelfToTableTeleop-psi0
 CONTAINER_DATASET=/workspace/SIMPLE/data/$DATASET_RELATIVE_PATH
-export COSMOS_CHECKPOINT_PATH=${COSMOS_CHECKPOINT_PATH:-$CF/psi0_g1/outputs/train/cosmos3_action_g1/action_sft/action_policy_g1_nano_full_1gpu/checkpoints/iter_000000020000}
+export COSMOS_CHECKPOINT_PATH=${COSMOS_CHECKPOINT_PATH:-$CF/psi0_g1/outputs/train/cosmos3_action_g1/action_sft/action_policy_g1_nano_full_1gpu/checkpoints/iter_000020000}
 COSMOS_CHUNK_LENGTH=${COSMOS_CHUNK_LENGTH:-24}
 ACTION_EXEC_HORIZON=${ACTION_EXEC_HORIZON:-24}
 GPU_DEVICE=${SLURM_JOB_GPUS:-${CUDA_VISIBLE_DEVICES:-0}}
