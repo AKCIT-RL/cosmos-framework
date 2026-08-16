@@ -118,7 +118,7 @@ log "Rodando eval-decoupled-wbc via apptainer: $EPISODES episodios (gpu=$CLIENT_
         --env OMNI_KIT_ACCEPT_EULA=Y \
         --env MUJOCO_GL=egl \
         --env UV_CACHE_DIR=/workspace/.uv-cache \
-        --env LD_LIBRARY_PATH="/usr/local/cuda-12.8/targets/x86_64-linux/lib:/isaac-sim/extscache/omni.kit.streamsdk.plugins-6.1.7+106.2.0.lx64.r/bin:$LDP" \
+        --env LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:/usr/local/cuda-12.8/targets/x86_64-linux/lib:/isaac-sim/extscache/omni.kit.streamsdk.plugins-6.1.7+106.2.0.lx64.r/bin:$LDP:/.singularity.d/libs" \
         --env SIMPLE_ISAAC_BACKGROUND_USD="$ISAAC_BACKGROUND_USD" \
         "$SIF" \
         uv run --no-sync eval-decoupled-wbc \
