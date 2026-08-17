@@ -1,0 +1,46 @@
+# G1 wholebody action-policy FULL SFT — recipe-style (docs/action_policy_libero
+# _posttrain.md): moe_gen UNFROZEN, big global batch, few iterations.
+# 8x H100 single node (recipe uses HSDP 2x8; we halve replicate -> gbs 1024).
+# Env: G1_ROOT, BASE_CHECKPOINT_PATH, WAN_VAE_PATH, IMAGINAIRE_OUTPUT_ROOT.
+
+[job]
+task         = "vfm"
+experiment   = "action_policy_g1_nano"
+project      = "cosmos3_action_g1"
+group        = "action_sft"
+name         = "action_policy_g1_nano_full_8gpu"
+wandb_mode   = "online"
+
+[model]
+precision = "bfloat16"
+max_num_tokens_after_packing = 74000
+
+[model.parallelism]
+data_parallel_shard_degree     = 8
+data_parallel_replicate_degree = 1    # gbs = 128 x 8 x 1 = 1024 (recipe/2)
+
+[model.activation_checkpointing]
+mode           = "selective"
+save_ops_regex = ["fmha"]
+
+[model.tokenizer]
+vae_path = "${oc.env:WAN_VAE_PATH}"
+
+[optimizer]
+lr = 5.0e-05
+
+[scheduler]
+cycle_lengths = [16000]
+warm_up_steps = [500]
+
+[trainer]
+max_iter        = 1500    # ~4 epochs of 390k windows at gbs 1024
+logging_iter    = 50
+grad_accum_iter = 1
+
+[checkpoint]
+load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
+save_iter = 750           # 2 saves x 29G — max the disk quota allows
+
+[dataloader_train]
+max_samples_per_batch = 128
