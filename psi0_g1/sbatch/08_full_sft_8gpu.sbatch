@@ -17,6 +17,7 @@ set -euo pipefail
 REPO=/raid/user_marcospaulo/Psi0
 CF=$REPO/third_party/cosmos-framework
 SFT_TOML=${SFT_TOML:-$CF/psi0_g1/toml/action_policy_g1_nano_full_8gpu.toml}
+NPROC=${NPROC:-8}
 
 export LD_LIBRARY_PATH=$CF/.venv/lib/python3.13/site-packages/nvidia/cu13/lib:${LD_LIBRARY_PATH:-}
 export PATH=$HOME/.local/bin:$PATH
@@ -38,7 +39,7 @@ mkdir -p "$WANDB_DIR" "$IMAGINAIRE_OUTPUT_ROOT"
 cd "$CF"
 
 nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv
-.venv/bin/torchrun --nproc_per_node=8 --master_port=50022 \
+.venv/bin/torchrun --nproc_per_node="$NPROC" --master_port=50022 \
     -m cosmos_framework.scripts.train \
     --sft-toml="$SFT_TOML"
 echo "SFT 8GPU OK ($SFT_TOML)"

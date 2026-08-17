@@ -1,0 +1,45 @@
+# Measurement smoke for the 8-GPU unfrozen recipe config: 30 iters to verify
+# memory fit and s/iter before committing to the full run. Same settings as
+# action_policy_g1_nano_full_8gpu.toml except max_iter.
+
+[job]
+task         = "vfm"
+experiment   = "action_policy_g1_nano"
+project      = "cosmos3_action_g1"
+group        = "action_sft"
+name         = "action_policy_g1_nano_smoke_4gpu"
+wandb_mode   = "online"
+
+[model]
+precision = "bfloat16"
+max_num_tokens_after_packing = 74000
+
+[model.parallelism]
+data_parallel_shard_degree     = 4
+data_parallel_replicate_degree = 1
+
+[model.activation_checkpointing]
+mode           = "selective"
+save_ops_regex = ["fmha"]
+
+[model.tokenizer]
+vae_path = "${oc.env:WAN_VAE_PATH}"
+
+[optimizer]
+lr = 5.0e-05
+
+[scheduler]
+cycle_lengths = [16000]
+warm_up_steps = [500]
+
+[trainer]
+max_iter        = 30
+logging_iter    = 10
+grad_accum_iter = 1
+
+[checkpoint]
+load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
+save_iter = 10000
+
+[dataloader_train]
+max_samples_per_batch = 64
