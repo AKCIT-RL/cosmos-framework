@@ -35,11 +35,11 @@ warm_up_steps = [500]
 [trainer]
 max_iter        = 1500
 logging_iter    = 50
-grad_accum_iter = 16      # gbs = 32 x 2 ranks x 16 = 1024
+grad_accum_iter = 32      # gbs = 16 x 2 ranks x 32 = 1024
 
 [checkpoint]
 load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
 save_iter = 750
 
 [dataloader_train]
-max_samples_per_batch = 32
+max_samples_per_batch = 16

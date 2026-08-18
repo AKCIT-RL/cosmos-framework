@@ -42,4 +42,4 @@ load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
 save_iter = 10000
 
 [dataloader_train]
-max_samples_per_batch = 32
+max_samples_per_batch = 16
