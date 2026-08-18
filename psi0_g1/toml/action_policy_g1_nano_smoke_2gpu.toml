@@ -19,7 +19,7 @@ data_parallel_shard_degree     = 2
 data_parallel_replicate_degree = 1
 
 [model.activation_checkpointing]
-mode           = "selective"
+mode           = "full"
 save_ops_regex = ["fmha"]
 
 [model.tokenizer]
@@ -42,4 +42,4 @@ load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
 save_iter = 10000
 
 [dataloader_train]
-max_samples_per_batch = 16
+max_samples_per_batch = 8
