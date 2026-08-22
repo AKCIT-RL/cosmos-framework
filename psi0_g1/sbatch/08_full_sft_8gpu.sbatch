@@ -34,12 +34,26 @@ export WAN_VAE_PATH=$CF/psi0_g1/checkpoints/wan22_vae/Wan2.2_VAE.pth
 export IMAGINAIRE_OUTPUT_ROOT=$CF/psi0_g1/outputs/train
 export PYTHONUNBUFFERED=1
 export PYTORCH_ALLOC_CONF=expandable_segments:True
-mkdir -p "$WANDB_DIR" "$IMAGINAIRE_OUTPUT_ROOT"
+export SLURM_LOG_DIR=$REPO/logs/cosmos3-g1-${SLURM_JOB_ID}
+mkdir -p "$WANDB_DIR" "$IMAGINAIRE_OUTPUT_ROOT" "$SLURM_LOG_DIR"
+rm -f "$SLURM_LOG_DIR/SIGUSR1_RECEIVED" "$SLURM_LOG_DIR/SIGUSR1_CHECKPOINT_SUCCEEDED"
+trap 'touch "$SLURM_LOG_DIR/SIGUSR1_RECEIVED"' USR1
 
 cd "$CF"
 
 nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv
 .venv/bin/torchrun --nproc_per_node="$NPROC" --master_port=50022 \
     -m cosmos_framework.scripts.train \
-    --sft-toml="$SFT_TOML"
+    --sft-toml="$SFT_TOML" &
+TRAIN_PID=$!
+while true; do
+    set +e
+    wait "$TRAIN_PID"
+    TRAIN_STATUS=$?
+    set -e
+    if ! kill -0 "$TRAIN_PID" 2>/dev/null; then
+        break
+    fi
+done
+(( TRAIN_STATUS == 0 ))
 echo "SFT 8GPU OK ($SFT_TOML)"
