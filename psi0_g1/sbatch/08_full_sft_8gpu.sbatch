@@ -44,7 +44,7 @@ cd "$CF"
 nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv
 .venv/bin/torchrun --nproc_per_node="$NPROC" --master_port=50022 \
     -m cosmos_framework.scripts.train \
-    --sft-toml="$SFT_TOML" &
+    --sft-toml="$SFT_TOML" -- checkpoint.dcp_async_mode_enabled=true &
 TRAIN_PID=$!
 while true; do
     set +e

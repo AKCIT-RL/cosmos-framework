@@ -38,7 +38,6 @@ grad_accum_iter = 1
 [checkpoint]
 load_path = "${oc.env:BASE_CHECKPOINT_PATH}"
 save_iter = 1
-dcp_async_mode_enabled = true
 
 [dataloader_train]
 max_samples_per_batch = 64
