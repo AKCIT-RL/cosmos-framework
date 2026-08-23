@@ -28,7 +28,7 @@ while true; do
             for checkpoint_path in "$CHECKPOINT_ROOT"/iter_*; do
                 [[ -d "$checkpoint_path" ]] || continue
                 checkpoint_iteration=${checkpoint_path##*/iter_}
-                if (( 10#$checkpoint_iteration < 10#$latest_iteration )); then
+                if [[ ! -e "$checkpoint_path/.keep" ]] && (( 10#$checkpoint_iteration < 10#$latest_iteration )); then
                     echo "Pruning $checkpoint_path"
                     rm -rf "$checkpoint_path"
                 fi
