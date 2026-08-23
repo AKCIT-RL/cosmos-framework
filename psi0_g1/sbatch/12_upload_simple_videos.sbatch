@@ -13,6 +13,8 @@ CF=$REPO/third_party/cosmos-framework
 : "${RESULT_RUN_ID:?Set RESULT_RUN_ID to the SIMPLE RUN_ID}"
 : "${WANDB_RUN_ID:?Set WANDB_RUN_ID}"
 : "${WANDB_RUN_NAME:?Set WANDB_RUN_NAME}"
+: "${CHECKPOINT_ITERATION:=250}"
+: "${WANDB_GROUP:=simple_intermediate_checkpoints}"
 
 mapfile -t matches < <(find "$REPO/eval/results" -mindepth 2 -maxdepth 2 -type d -name "$RESULT_RUN_ID")
 [[ ${#matches[@]} -eq 1 ]] || { echo "Expected one result for $RESULT_RUN_ID, found ${#matches[@]}" >&2; exit 1; }
@@ -45,9 +47,9 @@ run = wandb.init(
     id=run_id,
     resume="allow",
     name=run_name,
-    group="simple_intermediate_checkpoints",
+    group=os.environ["WANDB_GROUP"],
     job_type="evaluation",
-    config={"result_root": str(result_root), "checkpoint_iteration": 250},
+    config={"result_root": str(result_root), "checkpoint_iteration": int(os.environ["CHECKPOINT_ITERATION"])},
 )
 table = wandb.Table(columns=["episode", "left_video", "right_video", "success"])
 for episode, success in sorted(stats.items()):
