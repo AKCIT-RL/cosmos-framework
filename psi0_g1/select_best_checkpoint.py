@@ -52,10 +52,15 @@ def main() -> None:
 
     latest_file = args.checkpoint.parent / "latest_checkpoint.txt"
     latest_iteration = int(latest_file.read_text().strip().removeprefix("iter_"))
+    candidate_iteration = int(args.checkpoint.name.removeprefix("iter_"))
     selected_path = Path(selected["checkpoint"])
     for checkpoint_path in args.checkpoint.parent.glob("iter_*"):
         iteration = int(checkpoint_path.name.removeprefix("iter_"))
-        if checkpoint_path.resolve() != selected_path.resolve() and iteration < latest_iteration:
+        if (
+            checkpoint_path.resolve() != selected_path.resolve()
+            and iteration <= candidate_iteration
+            and iteration < latest_iteration
+        ):
             checkpoint_path.joinpath(".keep").unlink(missing_ok=True)
             shutil.rmtree(checkpoint_path)
             print(f"Pruned evaluated loser: {checkpoint_path}")
