@@ -28,6 +28,8 @@ export IMAGINAIRE_OUTPUT_ROOT=$CF/psi0_g1/outputs/train
 export PYTHONUNBUFFERED=1
 export PYTORCH_ALLOC_CONF=expandable_segments:True
 export EVAL_CHECKPOINT_PATH=${EVAL_CHECKPOINT_PATH:-$CF/psi0_g1/outputs/train/cosmos3_action_g1/action_sft/action_policy_g1_nano_full_1gpu/checkpoints/iter_000020000}
+EVAL_NUM_WINDOWS=${EVAL_NUM_WINDOWS:-200}
+EVAL_BATCH_SIZE=${EVAL_BATCH_SIZE:-4}
 
 cd "$CF"
 export PYTHONPATH=$CF
@@ -35,6 +37,6 @@ export PYTHONPATH=$CF
 nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv
 .venv/bin/python psi0_g1/eval_offline_g1.py \
     --checkpoint-path "$EVAL_CHECKPOINT_PATH" \
-    --num-windows 200 \
-    --batch-size 4
+    --num-windows "$EVAL_NUM_WINDOWS" \
+    --batch-size "$EVAL_BATCH_SIZE"
 echo "EVAL OFFLINE OK"
