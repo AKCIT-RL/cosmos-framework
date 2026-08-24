@@ -22,6 +22,7 @@ RESULT_ROOT=${matches[0]}
 
 set -a; source "$REPO/secrets/psi0.env"; set +a
 export WANDB_PROJECT=cosmos3-g1
+export WANDB_MODE=online
 export WANDB_DIR=$REPO/cache/wandb
 
 "$CF/.venv/bin/python" - "$RESULT_ROOT" "$WANDB_RUN_ID" "$WANDB_RUN_NAME" <<'PY'
